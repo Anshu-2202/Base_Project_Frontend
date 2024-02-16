@@ -22,7 +22,9 @@
           required
           placeholder="Create a name"
         />
-        <error-message v-if="errors.username">{{ errors.username }}</error-message>
+        <error-message v-if="errors.username">{{
+          errors.username
+        }}</error-message>
       </div>
       <div class="field">
         <label for="age">Age</label>
@@ -44,25 +46,26 @@
           required
           placeholder="Enter your password"
         />
-        <error-message v-if="errors.password">{{ errors.password }}</error-message>
+        <error-message v-if="errors.password">{{
+          errors.password
+        }}</error-message>
       </div>
       <button type="submit" :disabled="isLoading">
-        {{ isLoading ? 'Registering...' : 'Register' }}
+        {{ isLoading ? "Registering..." : "Register" }}
       </button>
     </form>
   </div>
 </template>
-
 
 <script>
 export default {
   data() {
     return {
       formData: {
-        email: '',
-        name: '',
-        age: '' ,
-        password: '',
+        email: "",
+        name: "",
+        age: "",
+        password: "",
       },
       errors: {},
       isLoading: false,
@@ -72,25 +75,26 @@ export default {
     async handleSubmit() {
       this.isLoading = true;
       this.errors = {}; // Reset errors
-
       try {
-        const response = await fetch('http://localhost:3001/user/create', {
-          method: 'POST',
+        const response = await fetch("http://localhost:3001/user/create", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(this.formData),
-        });
-
-        if (response.status !=200) {
+        }).then((res1) => res1.json())
+          .then((res) => res);;
+        if (response.statusCode != 200) {
           const errorData = await response.json();
-          this.errors = errorData.errors || { error: 'Registration failed' };
-          throw new Error(errorData.message || 'An error occurred');
+          this.errors = errorData.errors || { error: "Registration failed" };
+          throw new Error(errorData.message || "An error occurred");
+        } else {
+          this.$router.push("/login");
         }
       } catch (error) {
-        console.error('Registration error:', error);
+        console.error("Registration error:", error);
         // Handle error gracefully (e.g., show a general error message)
-        this.errors = { error: 'Registration failed' };
+        this.errors = { error: "Registration failed" };
       } finally {
         this.isLoading = false;
       }
